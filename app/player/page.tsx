@@ -31,12 +31,12 @@ const filters = ["ALL", "FAST", "MEDIUM", "SLOW", "NIGHT", "MIX"];
 
 export default function PlayerPage() {
   const [activeFilter, setActiveFilter] = useState("ALL");
-  const [currentTrack, setCurrentTrack] = useState(tracks.fast[0]);
+  const [currentTrack, setCurrentTrack] = useState(tracks.mix[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(0.8);
+  const [volume, setVolume] = useState(1.0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const allTracks = Object.entries(tracks).flatMap(([cat, list]) =>
@@ -46,6 +46,25 @@ export default function PlayerPage() {
   const filteredTracks = activeFilter === "ALL"
     ? allTracks
     : allTracks.filter(t => t.category === activeFilter.toLowerCase());
+
+  // Автозапуск
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const tryPlay = () => {
+      audio.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {});
+    };
+
+    audio.addEventListener("canplaythrough", tryPlay, { once: true });
+    tryPlay();
+
+    return () => {
+      audio.removeEventListener("canplaythrough", tryPlay);
+    };
+  }, [currentTrack]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -107,7 +126,6 @@ export default function PlayerPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#080C12", color: "#E8EFF5", fontFamily: "Georgia, serif", display: "flex", flexDirection: "column" }}>
 
-      {/* NAV */}
       <nav style={{
         padding: "20px 48px", display: "flex", alignItems: "center", justifyContent: "space-between",
         borderBottom: "1px solid rgba(201,168,76,0.15)",
@@ -120,34 +138,26 @@ export default function PlayerPage() {
       </nav>
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "48px 24px" }}>
-
-        {/* PLAYER CARD */}
         <div style={{
           width: "100%", maxWidth: 640,
           background: "#0D1B2A", border: "1px solid rgba(201,168,76,0.2)",
           borderRadius: 24, overflow: "hidden",
           boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
         }}>
-
-          {/* NOW PLAYING */}
           <div style={{ padding: "32px 32px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.1em", marginBottom: 12, fontFamily: "monospace" }}>
-              ▶ СЕЙЧАС ИГРАЕТ
+              {isPlaying ? "▶ СЕЙЧАС ИГРАЕТ" : "⏸ ПАУЗА"}
             </div>
             <div style={{ fontSize: 28, fontWeight: 700, color: "#fff", marginBottom: 4, fontStyle: "italic" }}>
               {currentTrack.title}
             </div>
             <div style={{ fontSize: 13, color: "#8BA7BE" }}>FonMusic · Лицензионная музыка</div>
 
-            {/* PROGRESS */}
             <div style={{ marginTop: 24 }}>
-              <div
-                onClick={seek}
-                style={{
-                  height: 4, background: "rgba(255,255,255,0.1)", borderRadius: 2,
-                  cursor: "pointer", position: "relative", marginBottom: 8,
-                }}
-              >
+              <div onClick={seek} style={{
+                height: 4, background: "rgba(255,255,255,0.1)", borderRadius: 2,
+                cursor: "pointer", position: "relative", marginBottom: 8,
+              }}>
                 <div style={{
                   position: "absolute", left: 0, top: 0, height: "100%",
                   width: `${progress}%`, background: "#C9A84C", borderRadius: 2,
@@ -160,17 +170,16 @@ export default function PlayerPage() {
               </div>
             </div>
 
-            {/* CONTROLS */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, marginTop: 24 }}>
-              <button id="playBtn" onClick={togglePlay} style={{
-               width: 56, height: 56, borderRadius: "50%",
+              <button onClick={playPrev} style={{
+                background: "none", border: "none", color: "#8BA7BE",
                 fontSize: 20, cursor: "pointer", padding: 8,
               }}>⏮</button>
 
-              <button onClick={togglePlay} style={{
-                width: 56, height: 56, borderRadius: "50%",
+              <button id="playBtn" onClick={togglePlay} style={{
+                width: 64, height: 64, borderRadius: "50%",
                 background: "#C9A84C", border: "none", cursor: "pointer",
-                fontSize: 20, color: "#080C12", fontWeight: 700,
+                fontSize: 24, color: "#080C12", fontWeight: 700,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 boxShadow: "0 4px 16px rgba(201,168,76,0.4)",
               }}>
@@ -183,7 +192,6 @@ export default function PlayerPage() {
               }}>⏭</button>
             </div>
 
-            {/* VOLUME */}
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 20 }}>
               <span style={{ fontSize: 14, color: "#8BA7BE" }}>🔉</span>
               <input
@@ -199,7 +207,6 @@ export default function PlayerPage() {
             </div>
           </div>
 
-          {/* FILTERS */}
           <div style={{ padding: "16px 32px", display: "flex", gap: 8, borderBottom: "1px solid rgba(255,255,255,0.06)", flexWrap: "wrap" }}>
             {filters.map(f => (
               <button key={f} onClick={() => setActiveFilter(f)} style={{
@@ -212,13 +219,8 @@ export default function PlayerPage() {
             ))}
           </div>
 
-          {/* TRACK LIST */}
           <div style={{ maxHeight: 320, overflowY: "auto" }}>
-            {filteredTracks.length === 0 ? (
-              <div style={{ padding: 32, textAlign: "center", color: "#8BA7BE", fontSize: 14 }}>
-                Треки загружаются...
-              </div>
-            ) : filteredTracks.map((track, i) => (
+            {filteredTracks.map((track, i) => (
               <div
                 key={track.file}
                 onClick={() => playTrack(track)}
@@ -259,7 +261,7 @@ export default function PlayerPage() {
         </p>
       </div>
 
-      <audio ref={audioRef} src={`${BASE_URL}/${currentTrack.file}`} />
+      <audio ref={audioRef} src={`${BASE_URL}/${currentTrack.file}`} preload="auto" />
     </main>
   );
 }
