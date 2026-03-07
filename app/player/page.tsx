@@ -19,11 +19,14 @@ const tracks: Record<string, { title: string; file: string }[]> = {
     { title: "Warm Air", file: "night/Warm%20Air.mp3" },
     { title: "Warm Echo", file: "night/Warm%20Echo.mp3" },
   ],
+
   mix: [
-    { title: "Aero", file: "mix/Aero.mp3" },
-    { title: "After Midnight", file: "mix/After%20Midnight.mp3" },
-    { title: "Deep Wave - After Rain", file: "mix/Deep%20Wave%20-%20After%20rain.mp3" },
-    { title: "Deep Wave - Moonline", file: "mix/Deep%20Wave%20-%20Moonline%20.mp3" },
+    { title: "Mira - Deep Wave", file: "mix/Mira%20-%20Deep%20Wave.mp3" },
+    { title: "New Deep", file: "mix/New%20Deep.mp3" },
+    { title: "Obscura", file: "mix/Obscura.mp3" },
+    { title: "Oriental Echo", file: "mix/Oriental%20Echo.mp3" },
+    { title: "Silence", file: "mix/Silence.mp3" },
+    { title: "Silent Goodbye", file: "mix/Silent%20Goodbye.mp3" },
   ],
 };
 
