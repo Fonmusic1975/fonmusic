@@ -24,3 +24,38 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+@media (max-width: 768px) {
+  nav {
+    padding: 16px 20px !important;
+  }
+  nav div[style*="gap: 32"] {
+    display: none !important;
+  }
+  section {
+    padding: 60px 20px !important;
+  }
+  h1 {
+    font-size: 36px !important;
+  }
+  h2 {
+    font-size: 28px !important;
+  }
+  div[style*="gridTemplateColumns: \"1fr 1fr\""] {
+    grid-template-columns: 1fr !important;
+  }
+  div[style*="gridTemplateColumns: \"1fr 1fr 1fr\""] {
+    grid-template-columns: 1fr !important;
+  }
+  div[style*="gridTemplateColumns: \"1fr 1fr 1fr 1fr\""] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  div[style*="gap: 80"] {
+    gap: 32px !important;
+  }
+  div[style*="fontSize: 64"] {
+    font-size: 36px !important;
+  }
+  div[style*="fontSize: 56"] {
+    font-size: 32px !important;
+  }
+}
