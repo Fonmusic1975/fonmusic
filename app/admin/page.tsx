@@ -251,9 +251,29 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <p style={{ textAlign: "center", fontSize: 13, color: "#8BA7BE", marginTop: 32 }}>★ Первые 10 дней — бесплатно для новых клиентов</p>
+         <p style={{ textAlign: "center", fontSize: 13, color: "#8BA7BE", marginTop: 32 }}>★ Первые 10 дней — бесплатно для новых клиентов</p>
+
+<div style={{ marginTop: 48, background: "linear-gradient(135deg, #0D1B2A, #162435)", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 20, padding: isMobile ? 28 : 40, display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", gap: 32 }}>
+  <div style={{ fontSize: 64 }}>🎵</div>
+  <div style={{ flex: 1 }}>
+    <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.1em", marginBottom: 8, fontFamily: "monospace" }}>ОПЦИОНАЛЬНО</div>
+    <h3 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: "#fff", marginBottom: 8 }}>FonMusic Player</h3>
+    <p style={{ fontSize: 14, color: "#8BA7BE", lineHeight: 1.7, marginBottom: 16 }}>Специализированная приставка с предустановленным плеером. Автозапуск при включении — музыка играет без компьютера и телефона.</p>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      {["Автозапуск при включении", "Работает 24/7", "Не нужен компьютер", "Любая акустика"].map(f => (
+        <span key={f} style={{ padding: "4px 12px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 100, fontSize: 12, color: "#C9A84C" }}>{f}</span>
+      ))}
+    </div>
+  </div>
+  <div style={{ textAlign: isMobile ? "left" : "center", minWidth: 140 }}>
+    <div style={{ fontSize: 32, fontWeight: 700, color: "#fff", marginBottom: 4 }}>$70</div>
+    <div style={{ fontSize: 12, color: "#8BA7BE", marginBottom: 16 }}>разовая оплата</div>
+    <a href="#contact" style={{ display: "block", padding: "12px 24px", background: "#C9A84C", color: "#080C12", borderRadius: 8, fontSize: 14, fontWeight: 700, textDecoration: "none", textAlign: "center" }}>Заказать →</a>
+  </div>
+</div>
+
         </div>
-      </section>
+</section>
 
       {/* CTA */}
       <section id="contact" style={{ padding: `80px ${px}`, position: "relative", overflow: "hidden" }}>
