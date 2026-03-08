@@ -12,299 +12,296 @@ function useIsMobile() {
   return isMobile;
 }
 
-function LeadForm() {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [type, setType] = useState("Ресторан");
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+const clients = [
+  { id: 1, name: "Ресторан Silk Road", phone: "+998 90 123 45 67", type: "Ресторан", tariff: "Стандарт", genre: "mix", device: "device_001", status: "active", from: "2026-02-01", to: "2026-04-01" },
+  { id: 2, name: "Кафе Central", phone: "+998 91 234 56 78", type: "Кафе", tariff: "Базовый", genre: "slow", device: null, status: "active", from: "2026-02-15", to: "2026-03-15" },
+  { id: 3, name: "Бутик Milano", phone: "+998 93 345 67 89", type: "Магазин", tariff: "Премиум", genre: "fast", device: "device_002", status: "active", from: "2026-01-01", to: "2026-07-01" },
+  { id: 4, name: "Салон Beauty Pro", phone: "+998 94 456 78 90", type: "Салон красоты", tariff: "Базовый", genre: "medium", device: null, status: "expired", from: "2026-01-01", to: "2026-02-01" },
+  { id: 5, name: "Фитнес ClubX", phone: "+998 95 567 89 01", type: "Фитнес", tariff: "Стандарт", genre: "fast", device: "device_003", status: "active", from: "2026-03-01", to: "2026-06-01" },
+  { id: 6, name: "Отель Grand Plaza", phone: "+998 97 678 90 12", type: "Отель", tariff: "Премиум", genre: "night", device: "device_004", status: "trial", from: "2026-03-05", to: "2026-03-15" },
+];
 
-  const send = async () => {
-    if (!name || !phone) return;
-    setLoading(true);
-    const text = `🎵 Новая заявка FonMusic!\n\n🏢 Заведение: ${name}\n📞 Телефон: ${phone}\n🍽 Тип: ${type}`;
-    await fetch(`https://api.telegram.org/bot8572453029:AAGacP96un1FuPOcj6hmc708pOBv7nYPIiI/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: "500210645", text }),
-    });
-    setLoading(false);
-    setSent(true);
-  };
+const genreNames: Record<string, string> = { fast: "Энергичный", medium: "Средний", slow: "Медленный", night: "Ночной", mix: "Микс" };
+const tariffColors: Record<string, string> = { "Базовый": "#8BA7BE", "Стандарт": "#C9A84C", "Премиум": "#22C55E" };
+const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
+  active: { label: "Активен", color: "#22C55E", bg: "rgba(34,197,94,0.1)" },
+  expired: { label: "Истёк", color: "#EF4444", bg: "rgba(239,68,68,0.1)" },
+  trial: { label: "Пробный", color: "#C9A84C", bg: "rgba(201,168,76,0.1)" },
+};
 
-  if (sent) return (
-    <div style={{ textAlign: "center", padding: "32px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 16 }}>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
-      <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Заявка отправлена!</div>
-      <div style={{ fontSize: 15, color: "#8BA7BE" }}>Мы свяжемся с вами в течение 30 минут</div>
-    </div>
-  );
-
-  return (
-    <div style={{ width: "100%", maxWidth: 480, margin: "0 auto" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
-        <input value={name} onChange={e => setName(e.target.value)} placeholder="Название заведения"
-          style={{ padding: "14px 18px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, color: "#fff", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }} />
-        <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Ваш телефон (+998...)"
-          style={{ padding: "14px 18px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, color: "#fff", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }} />
-        <select value={type} onChange={e => setType(e.target.value)}
-          style={{ padding: "14px 18px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, color: "#fff", fontSize: 15, outline: "none", width: "100%", boxSizing: "border-box" }}>
-          {["Ресторан", "Кафе", "Магазин", "Отель", "Салон красоты", "Фитнес", "Другое"].map(t => (
-            <option key={t} value={t}>{t}</option>
-          ))}
-        </select>
-      </div>
-      <button onClick={send} disabled={loading} style={{ width: "100%", padding: "18px", background: "#C9A84C", color: "#080C12", border: "none", borderRadius: 8, fontSize: 16, fontWeight: 700, cursor: "pointer", boxSizing: "border-box" }}>
-        {loading ? "Отправляем..." : "Получить 10 дней бесплатно →"}
-      </button>
-      <div style={{ marginTop: 16, fontSize: 13, color: "#8BA7BE" }}>
-        или <a href="tel:+998994100910" style={{ color: "#C9A84C" }}>+998 99 410 09 10</a> · <a href="https://t.me/fonmusic2026" style={{ color: "#C9A84C" }}>Telegram</a>
-      </div>
-    </div>
-  );
-}
-
-export default function Home() {
+export default function AdminPage() {
   const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-    if (!mounted) return null;
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeGenre, setActiveGenre] = useState(0);
+  const [tab, setTab] = useState<"dashboard" | "clients" | "devices">("dashboard");
+  const [search, setSearch] = useState("");
+  const [showAdd, setShowAdd] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<any>(null);
+  const [password, setPassword] = useState("");
+  const [authed, setAuthed] = useState(false);
+  const [pwError, setPwError] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
 
-  useEffect(() => {
-    const interval = setInterval(() => setActiveGenre(p => (p + 1) % genres.length), 2000);
-    return () => clearInterval(interval);
-  }, []);
+  const m = isMobile;
+  const px = m ? 16 : 32;
 
-  const genres = ["Джаз", "Лаунж", "Поп", "Классика", "Эмбиент", "Босса-нова", "Инди", "Фанк"];
+  const filtered = clients.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.phone.includes(search)
+  );
 
-  const plans = [
-    { name: "Базовый", price: "625 000", usd: "$50", desc: "Веб-плеер для старта", features: ["Доступ через браузер", "1 жанр на выбор", "Официальный сертификат", "Базовая поддержка"], highlight: false },
-    { name: "Стандарт", price: "875 000", usd: "$70", desc: "Android TV + автоматизация", features: ["Автозапуск при включении", "Все 27 жанров", "Официальный сертификат", "Приоритетная поддержка"], highlight: true },
-    { name: "Премиум", price: "1 250 000", usd: "$100", desc: "Для сетей от 5 точек", features: ["Скидка от 20%", "Личный кабинет", "Разные жанры в каждой точке", "Персональный менеджер"], highlight: false },
-  ];
+  const stats = {
+    total: clients.length,
+    active: clients.filter(c => c.status === "active").length,
+    trial: clients.filter(c => c.status === "trial").length,
+    expired: clients.filter(c => c.status === "expired").length,
+    devices: clients.filter(c => c.device).length,
+    revenue: clients.filter(c => c.status === "active").reduce((acc, c) => {
+      if (c.tariff === "Базовый") return acc + 50;
+      if (c.tariff === "Стандарт") return acc + 70;
+      if (c.tariff === "Премиум") return acc + 100;
+      return acc;
+    }, 0),
+  };
 
-  const steps = [
-    { num: "01", title: "Выбираете тариф", desc: "Подбираем жанр и настроение музыки для вашего заведения" },
-    { num: "02", title: "Мы устанавливаем", desc: "Приставка Android TV устанавливается за 30 минут" },
-    { num: "03", title: "Музыка играет", desc: "Автозапуск при включении. Ничего не нужно настраивать" },
-    { num: "04", title: "Вы защищены", desc: "Официальный сертификат на каждое заведение" },
-  ];
-
-  const px = isMobile ? "20px" : "48px";
+  // AUTH SCREEN
+  if (!authed) {
+    return (
+      <main style={{ minHeight: "100vh", background: "#080C12", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+        <div style={{ width: "100%", maxWidth: 380, padding: 40, background: "#0D1B2A", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 20, boxShadow: "0 40px 80px rgba(0,0,0,0.5)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32 }}>
+            <div style={{ width: 6, height: 24, background: "#C9A84C", borderRadius: 2 }} />
+            <span style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>FonMusic Admin</span>
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 24 }}>🔐 Вход</h2>
+          <input
+            type="password"
+            value={password}
+            onChange={e => { setPassword(e.target.value); setPwError(false); }}
+            onKeyDown={e => { if (e.key === "Enter") { if (password === "fonmusic2026") setAuthed(true); else setPwError(true); }}}
+            placeholder="Пароль"
+            style={{ width: "100%", padding: "13px 16px", background: "#162435", border: `1px solid ${pwError ? "#EF4444" : "rgba(255,255,255,0.1)"}`, borderRadius: 8, color: "#fff", fontSize: 15, outline: "none", boxSizing: "border-box", marginBottom: 12 }}
+          />
+          {pwError && <div style={{ fontSize: 13, color: "#EF4444", marginBottom: 12 }}>Неверный пароль</div>}
+          <button onClick={() => { if (password === "fonmusic2026") setAuthed(true); else setPwError(true); }}
+            style={{ width: "100%", padding: 14, background: "#C9A84C", border: "none", borderRadius: 8, color: "#080C12", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+            Войти
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main style={{ fontFamily: "'Georgia', serif", background: "#080C12", color: "#E8EFF5", overflowX: "hidden" }}>
+    <main style={{ minHeight: "100vh", background: "#080C12", color: "#E8EFF5", fontFamily: "Georgia, serif" }}>
 
       {/* NAV */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: `16px ${px}`, display: "flex", alignItems: "center", justifyContent: "space-between", background: isScrolled ? "rgba(8,12,18,0.95)" : "transparent", backdropFilter: isScrolled ? "blur(20px)" : "none", borderBottom: isScrolled ? "1px solid rgba(201,168,76,0.15)" : "none", transition: "all 0.4s ease" }}>
+      <nav style={{ padding: `16px ${px}px`, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(201,168,76,0.15)", background: "#080C12", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 6, height: 24, background: "#C9A84C", borderRadius: 2 }} />
-          <span style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, color: "#fff" }}>FonMusic</span>
+          <span style={{ fontSize: m ? 16 : 18, fontWeight: 700, color: "#fff" }}>FonMusic Admin</span>
         </div>
-        {!isMobile && (
-          <div style={{ display: "flex", gap: 32, fontSize: 14, color: "#8BA7BE" }}>
-            <a href="#how" style={{ color: "#8BA7BE", textDecoration: "none" }}>Как это работает</a>
-            <a href="#pricing" style={{ color: "#8BA7BE", textDecoration: "none" }}>Тарифы</a>
-            <a href="#contact" style={{ color: "#8BA7BE", textDecoration: "none" }}>Контакты</a>
-          </div>
-        )}
-        <a href="#contact" style={{ padding: isMobile ? "8px 16px" : "10px 24px", background: "#C9A84C", color: "#080C12", borderRadius: 6, fontSize: isMobile ? 12 : 14, fontWeight: 700, textDecoration: "none" }}>
-          {isMobile ? "Начать" : "Начать бесплатно"}
-        </a>
+        <div style={{ display: "flex", gap: 6 }}>
+          {(["dashboard", "clients", "devices"] as const).map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{
+              padding: m ? "6px 12px" : "8px 18px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: m ? 11 : 13, fontWeight: 600,
+              background: tab === t ? "#C9A84C" : "rgba(255,255,255,0.05)",
+              color: tab === t ? "#080C12" : "#8BA7BE",
+            }}>
+              {t === "dashboard" ? (m ? "📊" : "📊 Дашборд") : t === "clients" ? (m ? "👥" : "👥 Клиенты") : (m ? "📱" : "📱 Устройства")}
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setAuthed(false)} style={{ padding: "7px 14px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, color: "#8BA7BE", fontSize: 12, cursor: "pointer" }}>
+          Выйти
+        </button>
       </nav>
 
-      {/* HERO */}
-      <section style={{ minHeight: "100vh", display: "flex", alignItems: "center", padding: isMobile ? "100px 20px 60px" : "120px 48px 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: "10%", right: "-5%", width: isMobile ? 300 : 600, height: isMobile ? 300 : 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(26,107,154,0.15) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 80, alignItems: "center" }}>
+      <div style={{ padding: `24px ${px}px`, maxWidth: 1200, margin: "0 auto" }}>
+
+        {/* DASHBOARD */}
+        {tab === "dashboard" && (
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 100, fontSize: 11, color: "#C9A84C", letterSpacing: "0.08em", marginBottom: 24, fontFamily: "monospace" }}>
-              ♪ ЛИЦЕНЗИОННАЯ ФОНОВАЯ МУЗЫКА
+            <h1 style={{ fontSize: m ? 22 : 28, fontWeight: 700, color: "#fff", marginBottom: 24 }}>Обзор</h1>
+
+            {/* STATS */}
+            <div style={{ display: "grid", gridTemplateColumns: m ? "1fr 1fr" : "1fr 1fr 1fr 1fr 1fr 1fr", gap: 12, marginBottom: 32 }}>
+              {[
+                { label: "Всего клиентов", value: stats.total, icon: "👥", color: "#8BA7BE" },
+                { label: "Активных", value: stats.active, icon: "✅", color: "#22C55E" },
+                { label: "Пробных", value: stats.trial, icon: "⏳", color: "#C9A84C" },
+                { label: "Истекло", value: stats.expired, icon: "❌", color: "#EF4444" },
+                { label: "Устройств", value: stats.devices, icon: "📱", color: "#1A6B9A" },
+                { label: "Доход/мес", value: `$${stats.revenue}`, icon: "💰", color: "#C9A84C" },
+              ].map(s => (
+                <div key={s.label} style={{ padding: m ? 16 : 20, background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14 }}>
+                  <div style={{ fontSize: 24, marginBottom: 8 }}>{s.icon}</div>
+                  <div style={{ fontSize: m ? 22 : 28, fontWeight: 700, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: 11, color: "#8BA7BE", marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
             </div>
-            <h1 style={{ fontSize: isMobile ? 40 : 64, fontWeight: 400, lineHeight: 1.1, marginBottom: 20, color: "#fff", fontStyle: "italic" }}>
-              Музыка для<br />
-              <span style={{ color: "#C9A84C", fontStyle: "normal", fontWeight: 700 }}>вашего бизнеса</span>
-            </h1>
-            <p style={{ fontSize: isMobile ? 15 : 18, color: "#8BA7BE", lineHeight: 1.7, marginBottom: 32, maxWidth: 480 }}>
-              Легальная фоновая музыка для ресторанов, магазинов и кафе в Узбекистане. Официальный сертификат. Автоматически.
-            </p>
-            <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-              <a href="#contact" style={{ padding: isMobile ? "14px 24px" : "16px 36px", background: "#C9A84C", color: "#080C12", borderRadius: 8, fontSize: isMobile ? 14 : 16, fontWeight: 700, textDecoration: "none" }}>
-                Первые 10 дней бесплатно →
-              </a>
-              {!isMobile && <a href="#how" style={{ padding: "16px 24px", color: "#8BA7BE", fontSize: 14, textDecoration: "none" }}>Как это работает ↓</a>}
-            </div>
-            <div style={{ display: "flex", gap: isMobile ? 24 : 40, marginTop: 40 }}>
-              {[["600K+", "треков"], ["27", "жанров"], ["100%", "легально"]].map(([val, label]) => (
-                <div key={label}>
-                  <div style={{ fontSize: isMobile ? 22 : 28, fontWeight: 700, color: "#C9A84C" }}>{val}</div>
-                  <div style={{ fontSize: 12, color: "#8BA7BE", marginTop: 4 }}>{label}</div>
+
+            {/* EXPIRING SOON */}
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 16 }}>⚠️ Истекают скоро</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {clients.filter(c => c.status === "trial" || c.status === "expired").map(c => (
+                <div key={c.id} style={{ padding: "16px 20px", background: "#0D1B2A", border: `1px solid ${statusConfig[c.status].color}33`, borderRadius: 12, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: "#8BA7BE" }}>{c.phone} · {c.tariff}</div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ fontSize: 12, color: "#8BA7BE" }}>до {c.to}</div>
+                    <span style={{ padding: "4px 12px", background: statusConfig[c.status].bg, borderRadius: 100, fontSize: 12, color: statusConfig[c.status].color, fontWeight: 600 }}>
+                      {statusConfig[c.status].label}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+        )}
 
-          {/* Genre card */}
-          <div style={{ position: "relative" }}>
-            <div style={{ background: "linear-gradient(135deg, #0D1B2A, #162435)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 20, padding: isMobile ? 24 : 40, boxShadow: "0 40px 80px rgba(0,0,0,0.5)" }}>
-              <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.1em", marginBottom: 16, fontFamily: "monospace" }}>▶ СЕЙЧАС ИГРАЕТ</div>
-              <div style={{ fontSize: isMobile ? 32 : 48, fontWeight: 700, color: "#fff", marginBottom: 8, fontStyle: "italic" }}>{genres[activeGenre]}</div>
-              <div style={{ fontSize: 13, color: "#8BA7BE", marginBottom: 24 }}>Автоматически подобранный плейлист</div>
-              <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 40, marginBottom: 24 }}>
-                {[...Array(20)].map((_, i) => (
-                  <div key={i} style={{ flex: 1, background: i % 3 === 0 ? "#C9A84C" : "#1A6B9A", borderRadius: 2, opacity: 0.7, height: `${20 + Math.sin(i * 0.8 + activeGenre) * 60}%`, transition: "height 0.5s ease" }} />
-                ))}
-              </div>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                {["Ресторан", "Кафе", "Магазин", "Отель", "Салон", "Фитнес"].map(tag => (
-                  <span key={tag} style={{ padding: "3px 10px", background: "rgba(26,107,154,0.2)", border: "1px solid rgba(26,107,154,0.3)", borderRadius: 100, fontSize: 11, color: "#8BA7BE" }}>{tag}</span>
-                ))}
-              </div>
+        {/* CLIENTS */}
+        {tab === "clients" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+              <h1 style={{ fontSize: m ? 22 : 28, fontWeight: 700, color: "#fff" }}>Клиенты</h1>
+              <button onClick={() => setShowAdd(true)} style={{ padding: "10px 20px", background: "#C9A84C", border: "none", borderRadius: 8, color: "#080C12", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+                + Добавить клиента
+              </button>
             </div>
-            <div style={{ position: "absolute", top: -16, right: -12, background: "#C9A84C", color: "#080C12", padding: "10px 16px", borderRadius: 10, fontSize: 12, fontWeight: 700, boxShadow: "0 8px 24px rgba(201,168,76,0.4)" }}>
-              ✓ Официальный<br />сертификат
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* PROBLEM */}
-      <section style={{ padding: `80px ${px}`, background: "#0A0F18" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.15em", marginBottom: 12, fontFamily: "monospace" }}>ПРОБЛЕМА</div>
-            <h2 style={{ fontSize: isMobile ? 28 : 44, fontWeight: 700, color: "#fff" }}>Незаконная музыка —<br />угроза для бизнеса</h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: 16 }}>
-            {[
-              { icon: "⚠️", title: "Spotify и YouTube запрещены", desc: "Использование стриминговых сервисов в коммерческих заведениях нарушает условия лицензии" },
-              { icon: "💸", title: "Серьёзные штрафы", desc: "При проверке инспекторами бизнес рискует получить значительные санкции" },
-              { icon: "😰", title: "Репутационный риск", desc: "Инцидент при проверке может нанести серьёзный ущерб имиджу заведения" },
-            ].map(item => (
-              <div key={item.title} style={{ padding: isMobile ? 24 : 32, background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 16 }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>{item.icon}</div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 10 }}>{item.title}</h3>
-                <p style={{ fontSize: 13, color: "#8BA7BE", lineHeight: 1.7 }}>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Поиск по имени или телефону..."
+              style={{ width: "100%", padding: "12px 16px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: "#fff", fontSize: 14, outline: "none", boxSizing: "border-box", marginBottom: 16 }} />
 
-      {/* HOW IT WORKS */}
-      <section id="how" style={{ padding: `80px ${px}` }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.15em", marginBottom: 12, fontFamily: "monospace" }}>КАК ЭТО РАБОТАЕТ</div>
-            <h2 style={{ fontSize: isMobile ? 28 : 44, fontWeight: 700, color: "#fff" }}>Просто. Быстро. Легально.</h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 16 }}>
-            {steps.map((step, i) => (
-              <div key={step.num} style={{ padding: isMobile ? 20 : 32, background: "#0D1B2A", border: `1px solid ${i === 0 ? "rgba(201,168,76,0.4)" : "rgba(255,255,255,0.06)"}`, borderRadius: 16 }}>
-                <div style={{ fontSize: isMobile ? 32 : 48, fontWeight: 700, color: i === 0 ? "#C9A84C" : "rgba(26,107,154,0.5)", marginBottom: 12 }}>{step.num}</div>
-                <h3 style={{ fontSize: isMobile ? 13 : 16, fontWeight: 700, color: "#fff", marginBottom: 8 }}>{step.title}</h3>
-                <p style={{ fontSize: 12, color: "#8BA7BE", lineHeight: 1.6 }}>{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="pricing" style={{ padding: `80px ${px}`, background: "#0A0F18" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.15em", marginBottom: 12, fontFamily: "monospace" }}>ТАРИФЫ</div>
-            <h2 style={{ fontSize: isMobile ? 28 : 44, fontWeight: 700, color: "#fff" }}>Прозрачные цены</h2>
-            <p style={{ fontSize: 14, color: "#8BA7BE", marginTop: 12 }}>Цены в эквиваленте по курсу ЦБ РУз на дату оплаты</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: isMobile ? 16 : 24 }}>
-            {plans.map(plan => (
-              <div key={plan.name} style={{ padding: isMobile ? 28 : 40, background: plan.highlight ? "linear-gradient(135deg, #1A6B9A, #0D3D5E)" : "#0D1B2A", border: `2px solid ${plan.highlight ? "#C9A84C" : "rgba(255,255,255,0.06)"}`, borderRadius: 20, position: "relative", transform: isMobile ? "scale(1)" : plan.highlight ? "scale(1.05)" : "scale(1)" }}>
-                {plan.highlight && <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "#C9A84C", color: "#080C12", padding: "5px 18px", borderRadius: 100, fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" }}>РЕКОМЕНДУЕМ</div>}
-                <h3 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 6 }}>{plan.name}</h3>
-                <p style={{ fontSize: 13, color: "#8BA7BE", marginBottom: 20 }}>{plan.desc}</p>
-                <div style={{ marginBottom: 6 }}>
-                  <span style={{ fontSize: 28, fontWeight: 700, color: plan.highlight ? "#fff" : "#C9A84C" }}>{plan.price}</span>
-                  <span style={{ fontSize: 13, color: "#8BA7BE" }}> сум/мес</span>
-                </div>
-                <div style={{ fontSize: 12, color: "#8BA7BE", marginBottom: 24 }}>≈ {plan.usd} / по курсу ЦБ</div>
-                <div style={{ borderTop: `1px solid ${plan.highlight ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.06)"}`, paddingTop: 20, marginBottom: 24 }}>
-                  {plan.features.map(f => (
-                    <div key={f} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 10 }}>
-                      <span style={{ color: "#C9A84C" }}>✓</span>
-                      <span style={{ fontSize: 13, color: plan.highlight ? "#E8EFF5" : "#8BA7BE" }}>{f}</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {filtered.map(c => (
+                <div key={c.id} onClick={() => setSelectedClient(c)} style={{ padding: m ? "16px" : "20px 24px", background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, cursor: "pointer", transition: "border-color 0.2s" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: m ? 14 : 16, fontWeight: 700, color: "#fff" }}>{c.name}</span>
+                        <span style={{ padding: "3px 10px", background: statusConfig[c.status].bg, borderRadius: 100, fontSize: 11, color: statusConfig[c.status].color, fontWeight: 600 }}>
+                          {statusConfig[c.status].label}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 13, color: "#8BA7BE", marginBottom: 4 }}>{c.phone} · {c.type}</div>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 12, color: tariffColors[c.tariff], fontWeight: 600 }}>{c.tariff}</span>
+                        <span style={{ fontSize: 12, color: "#8BA7BE" }}>🎵 {genreNames[c.genre]}</span>
+                        {c.device && <span style={{ fontSize: 12, color: "#1A6B9A" }}>📱 {c.device}</span>}
+                      </div>
                     </div>
-                  ))}
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 12, color: "#8BA7BE" }}>Действует до</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: c.status === "expired" ? "#EF4444" : "#fff" }}>{c.to}</div>
+                    </div>
+                  </div>
                 </div>
-                <a href="#contact" style={{ display: "block", textAlign: "center", padding: "13px", borderRadius: 8, background: plan.highlight ? "#C9A84C" : "rgba(201,168,76,0.1)", border: plan.highlight ? "none" : "1px solid rgba(201,168,76,0.3)", color: plan.highlight ? "#080C12" : "#C9A84C", fontSize: 14, fontWeight: 700, textDecoration: "none" }}>
-                  Подключить →
-                </a>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-         <p style={{ textAlign: "center", fontSize: 13, color: "#8BA7BE", marginTop: 32 }}>★ Первые 10 дней — бесплатно для новых клиентов</p>
+        )}
 
-<div style={{ marginTop: 48, background: "linear-gradient(135deg, #0D1B2A, #162435)", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 20, padding: isMobile ? 28 : 40, display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", gap: 32 }}>
-  <div style={{ fontSize: 64 }}>🎵</div>
-  <div style={{ flex: 1 }}>
-    <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.1em", marginBottom: 8, fontFamily: "monospace" }}>ОПЦИОНАЛЬНО</div>
-    <h3 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: "#fff", marginBottom: 8 }}>FonMusic Player</h3>
-    <p style={{ fontSize: 14, color: "#8BA7BE", lineHeight: 1.7, marginBottom: 16 }}>Специализированная приставка с предустановленным плеером. Автозапуск при включении — музыка играет без компьютера и телефона.</p>
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      {["Автозапуск при включении", "Работает 24/7", "Не нужен компьютер", "Любая акустика"].map(f => (
-        <span key={f} style={{ padding: "4px 12px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 100, fontSize: 12, color: "#C9A84C" }}>{f}</span>
-      ))}
-    </div>
-  </div>
-  <div style={{ textAlign: isMobile ? "left" : "center", minWidth: 140 }}>
-    <div style={{ fontSize: 32, fontWeight: 700, color: "#fff", marginBottom: 4 }}>$70</div>
-    <div style={{ fontSize: 12, color: "#8BA7BE", marginBottom: 16 }}>разовая оплата</div>
-    <a href="#contact" style={{ display: "block", padding: "12px 24px", background: "#C9A84C", color: "#080C12", borderRadius: 8, fontSize: 14, fontWeight: 700, textDecoration: "none", textAlign: "center" }}>Заказать →</a>
-  </div>
-</div>
+        {/* DEVICES */}
+        {tab === "devices" && (
+          <div>
+            <h1 style={{ fontSize: m ? 22 : 28, fontWeight: 700, color: "#fff", marginBottom: 20 }}>Устройства</h1>
+            <div style={{ display: "grid", gridTemplateColumns: m ? "1fr" : "1fr 1fr", gap: 14 }}>
+              {clients.filter(c => c.device).map(c => (
+                <div key={c.id} style={{ padding: 24, background: "#0D1B2A", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{c.device}</div>
+                      <div style={{ fontSize: 13, color: "#8BA7BE" }}>{c.name}</div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "rgba(34,197,94,0.1)", borderRadius: 100 }}>
+                      <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#22C55E" }} />
+                      <span style={{ fontSize: 12, color: "#22C55E" }}>Онлайн</span>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    {[
+                      { label: "Тариф", value: c.tariff },
+                      { label: "Жанр", value: genreNames[c.genre] },
+                      { label: "С", value: c.from },
+                      { label: "До", value: c.to },
+                    ].map(item => (
+                      <div key={item.label} style={{ background: "#162435", borderRadius: 8, padding: "10px 12px" }}>
+                        <div style={{ fontSize: 11, color: "#8BA7BE", marginBottom: 4 }}>{item.label}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
-        </div>
-</section>
-
-      {/* CTA */}
-      <section id="contact" style={{ padding: `80px ${px}`, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(201,168,76,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center", position: "relative" }}>
-          <div style={{ fontSize: 11, color: "#C9A84C", letterSpacing: "0.15em", marginBottom: 20, fontFamily: "monospace" }}>НАЧНИТЕ СЕГОДНЯ</div>
-          <h2 style={{ fontSize: isMobile ? 36 : 56, fontWeight: 700, color: "#fff", marginBottom: 20, fontStyle: "italic" }}>
-            Первые 10 дней —<br />
-            <span style={{ color: "#C9A84C", fontStyle: "normal" }}>бесплатно</span>
-          </h2>
-          <p style={{ fontSize: isMobile ? 15 : 18, color: "#8BA7BE", lineHeight: 1.7, marginBottom: 40 }}>
-            Подключите ваше заведение уже сегодня.<br />Музыка будет играть завтра утром.
-          </p>
-          <LeadForm />
-          <div style={{ marginTop: 40, fontSize: 13, color: "#8BA7BE" }}>
-            fonmusic.uz · +998 99 410 09 10 · info@fonmusic.uz
+      {/* CLIENT DETAIL MODAL */}
+      {selectedClient && (
+        <div onClick={() => setSelectedClient(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#0D1B2A", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 20, padding: 32, width: "100%", maxWidth: 500 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#fff" }}>{selectedClient.name}</h2>
+              <button onClick={() => setSelectedClient(null)} style={{ background: "none", border: "none", color: "#8BA7BE", fontSize: 20, cursor: "pointer" }}>✕</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { label: "Телефон", value: selectedClient.phone },
+                { label: "Тип заведения", value: selectedClient.type },
+                { label: "Тариф", value: selectedClient.tariff },
+                { label: "Жанр", value: genreNames[selectedClient.genre] },
+                { label: "Устройство", value: selectedClient.device || "Нет (веб-плеер)" },
+                { label: "Статус", value: statusConfig[selectedClient.status].label },
+                { label: "Подключён с", value: selectedClient.from },
+                { label: "Действует до", value: selectedClient.to },
+              ].map(item => (
+                <div key={item.label} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                  <span style={{ fontSize: 13, color: "#8BA7BE" }}>{item.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{item.value}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
+              <a href={`tel:${selectedClient.phone}`} style={{ flex: 1, padding: "12px", background: "#C9A84C", borderRadius: 8, color: "#080C12", fontSize: 14, fontWeight: 700, textDecoration: "none", textAlign: "center" }}>
+                📞 Позвонить
+              </a>
+              <a href={`https://t.me/fonmusic2026`} style={{ flex: 1, padding: "12px", background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 8, color: "#C9A84C", fontSize: 14, fontWeight: 700, textDecoration: "none", textAlign: "center" }}>
+                ✉️ Telegram
+              </a>
+            </div>
           </div>
         </div>
-      </section>
+      )}
 
-      {/* FOOTER */}
-      <footer style={{ padding: `24px ${px}`, borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: "center", gap: 12, fontSize: 12, color: "#8BA7BE", textAlign: isMobile ? "center" : "left" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ width: 4, height: 18, background: "#C9A84C", borderRadius: 2 }} />
-          <span style={{ fontWeight: 700, color: "#fff" }}>FonMusic</span>
+      {/* ADD CLIENT MODAL */}
+      {showAdd && (
+        <div onClick={() => setShowAdd(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: "#0D1B2A", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 20, padding: 32, width: "100%", maxWidth: 480 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#fff" }}>+ Новый клиент</h2>
+              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: "none", color: "#8BA7BE", fontSize: 20, cursor: "pointer" }}>✕</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {["Название заведения", "Телефон", "Тариф", "Жанр", "ID устройства (если есть)", "Дата начала", "Дата окончания"].map(placeholder => (
+                <input key={placeholder} placeholder={placeholder}
+                  style={{ padding: "12px 16px", background: "#162435", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#fff", fontSize: 14, outline: "none" }} />
+              ))}
+            </div>
+            <button style={{ width: "100%", marginTop: 20, padding: "14px", background: "#C9A84C", border: "none", borderRadius: 8, color: "#080C12", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+              Сохранить
+            </button>
+          </div>
         </div>
-        <div>© 2026 FonMusic.uz — Лицензионная фоновая музыка для бизнеса</div>
-        <div>Ташкент, Узбекистан</div>
-      </footer>
+      )}
 
-      <style>{`* { margin: 0; padding: 0; box-sizing: border-box; } html { scroll-behavior: smooth; }`}</style>
+      <style>{`* { margin: 0; padding: 0; box-sizing: border-box; } html, body { max-width: 100vw; overflow-x: hidden; }`}</style>
     </main>
   );
 }
